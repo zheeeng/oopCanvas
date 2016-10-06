@@ -1,11 +1,9 @@
-function Canvas (canvasEl, width, height, bgColor, lineWidth) {
+var Canvas = function (canvasEl, width, height, bgColor, lineWidth) {
   this.canvas = canvasEl !== undefined ? canvasEl : document.getElementsByTagName('canvas')[0]
   this.width = width !== undefined ? width : 500
   this.height = height !== undefined ? height : 300
   this.bgColor = bgColor !== undefined ? bgColor : 3
   this.lineWidth = lineWidth !== undefined ? lineWidth : 3
-
-  this.isPainting = false
   this.e = null
   this.ctx = this.canvas.getContext('2d')
 }

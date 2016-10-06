@@ -5,11 +5,12 @@
   <link rel="stylesheet" type="text/css" href="styles/basic.css">
   <script type="text/javascript" src="scripts/utils.js"></script>
   <script type="text/javascript" src="scripts/Canvas.js"></script>
+  <script type="text/javascript" src="scripts/Draw.js"></script>
 </head>
 <body>
   <canvas id="paper"></canvas>
   <script type="text/javascript">
-    var paper = new Canvas(document.getElementById('paper'), 500, 300)
+    var paper = new Draw(document.getElementById('paper'), 500, 300)
     paper.init()
   </script>
 </body>
