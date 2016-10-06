@@ -2,43 +2,13 @@
 <html>
 <head>
   <title>Hey Paper!</title>
-  <style type="text/css">
-    canvas {
-      display: block;
-      margin: 0 auto;
-    }
-  </style>
-  <script>
-    window.onload = function () {
-      var paperWidth = 500
-      var paperHeight = 300
-      var paper = document.getElementById('paper')
-      var ctx = paper.getContext('2d')
-
-      paper.width = paperWidth
-      paper.height = paperHeight
-
-      function clearPaper () {
-        ctx.save()
-        ctx.strokeStyle = "black"
-        ctx.lineWidth = 3
-
-        ctx.clearRect(0, 0, paper.width, paper.height)
-        ctx.beginPath()
-        ctx.moveTo(0, 0)
-        ctx.lineTo(0, paper.height)
-        ctx.lineTo(paper.width, paper.height)
-        ctx.lineTo(paper.width, 0)
-        ctx.closePath()
-        ctx.stroke()
-        ctx.restore()
-      }
-
-      clearPaper()
-    }
-  </script>
+  <link rel="stylesheet" type="text/css" href="styles/basic.css">
+  <script type="text/javascript" src="scripts/paper.js"></script>
 </head>
 <body>
   <canvas id="paper"></canvas>
+  <script type="text/javascript">
+    var paper = new Paper(document.getElementById('paper'), 500, 300)
+  </script>
 </body>
 </html>
