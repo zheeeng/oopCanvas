@@ -1,5 +1,5 @@
-var Draw = function (canvasEl, width, height, bgColor, lineWidth) {
-  Canvas.apply(this, arguments)
+var Draw = function (containerOption, darwOption) {
+  Canvas.call(this, containerOption)
   this.isPainting = false
 }
 

@@ -1,9 +1,10 @@
-var Canvas = function (canvasEl, width, height, bgColor, lineWidth) {
-  this.canvas = canvasEl !== undefined ? canvasEl : document.getElementsByTagName('canvas')[0]
-  this.width = width !== undefined ? width : 500
-  this.height = height !== undefined ? height : 300
-  this.bgColor = bgColor !== undefined ? bgColor : 3
-  this.lineWidth = lineWidth !== undefined ? lineWidth : 3
+var Canvas = function (option) {
+  this.canvas = option.canvasEl !== undefined ? option.canvasEl : document.getElementsByTagName('canvas')[0]
+  this.width = option.width !== undefined ? option.width : 500
+  this.height = option.height !== undefined ? option.height : 300
+  this.lineColor = option.lineColor !== undefined ? option.lineColor : 'black'
+  this.lineWidth = option.lineWidth !== undefined ? option.lineWidth : 3
+
   this.e = null
   this.ctx = this.canvas.getContext('2d')
 }
@@ -36,7 +37,7 @@ Canvas.prototype.clearCanvas = function () {
   var canvas = this.canvas
   var ctx = this.ctx
   ctx.save()
-  ctx.strokeStyle = this.bgColor
+  ctx.strokeStyle = this.lineColor
   ctx.lineWidth = this.lineWidth
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
