@@ -1,11 +1,16 @@
 function Canvas (canvasEl, width, height) {
   this.canvas = canvasEl
-  this.canvas.width = width
-  this.canvas.height = height
+  this.width = width
+  this.height = height
   this.isPainting = false
   this.ctx = this.canvas.getContext('2d')
+}
+
+Canvas.prototype.init = function () {
+  var canvas = this.canvas
+  canvas.width = this.width
+  canvas.height = this.height
   this.clearCanvas()
-  return this.canvas
 }
 
 Canvas.prototype.clearCanvas = function () {
@@ -25,4 +30,3 @@ Canvas.prototype.clearCanvas = function () {
   ctx.stroke()
   ctx.restore()
 }
-
