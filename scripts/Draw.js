@@ -18,22 +18,23 @@ Draw.prototype.drawZones = function () {
   var zones = this._zones
   var ctx = this.ctx
   zones.forEach(function (zone) {
-    if (zone.type === 'painting') {
-      console.log(zone)
+    if (zone.props && zone.props.type === 'painting') {
       ctx.save()
       ctx.rect(zone.fromX, zone.fromY, zone.toX - zone.fromX, zone.toY - zone.fromY)
       ctx.stroke()
       ctx.restore()
-    } else if (zone.type === 'tool') {
+    } else if (zone.props && zone.props.type === 'tool') {
       console.log('draw tool zone')
     }
   })
 }
 
 Draw.prototype.active = function () {
+  var canvas = this.canvas
+  var ctx = this.ctx
+
+  // Define mouse events
   var _this = this
-  var canvas = _this.canvas
-  var ctx = _this.ctx
   addEvent(canvas, 'mousedown', function (e) {
     _this._isPainting = true
     _this.lastX = _this.x
