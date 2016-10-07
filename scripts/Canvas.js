@@ -3,6 +3,7 @@ var Canvas = function (canvasEl, width, height) {
   this.width = width !== undefined ? width : 500
   this.height = height !== undefined ? height : 300
 
+  this.ctx = this.canvas.getContext('2d')
   this.e = null
 }
 
@@ -20,11 +21,10 @@ Object.defineProperties(Canvas.prototype, {
 })
 
 Canvas.prototype.init = function () {
-  var canvas = this.canvas
-  canvas.width = this.width
-  canvas.height = this.height
-  this.ctx = this.canvas.getContext('2d')
   var _this = this
+  var canvas = _this.canvas
+  canvas.width = _this.width
+  canvas.height = _this.height
   addEvent(canvas, 'mousemove', function (e) {
     _this.e = e
   })
