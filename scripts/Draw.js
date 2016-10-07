@@ -8,8 +8,8 @@ extend(Draw, Canvas)
 
 Draw.prototype.init = function () {
   Draw.uber.init.apply(this, arguments)
-  this.drawZones()
-  this.active()
+  // this.drawZones()
+  // this.active()
 }
 
 Draw.prototype.drawZones = function () {

@@ -1,82 +1,110 @@
-var Canvas = function (canvasEl, layout) {
+var Canvas = function (canvasEl, option) {
+  // format
+  option = Canvas.formatOption(option)
+
+  // assign instance value
   this.canvas = isCanvasElement(canvasEl) ? canvasEl : document.getElementsByTagName('canvas')[0]
-  this.layout = Canvas.formatLayoutData(layout)
-
   this.ctx = this.canvas.getContext('2d')
+  this.width = option.width
+  this.height = option.height
+  this.layout = option.layout
 
+  // format layout data
+  this['_' + this.layout] = Canvas.format(this.layout, option[this.layout])
+
+  // private variables
   this._e = null
 }
 
-Canvas.formatLayoutData = function (layout) {
-  var width = layout.width
-  var height = layout.height
-  var row = layout.row
-  var column = layout.column
-  var zones = layout.zones
+Canvas.layouts = ['grid']
 
-  // format width && height
-  if (isNaN(width) || isNaN(height)) {
-    throw TypeError('The width and the height of layout are required and they are numbers')
-  } else {
-    layout.width = +width
-    layout.height = +height
+Canvas.formatOption = function (option) {
+  var width = option.width
+  var height = option.height
+  var layout = option.layout
+
+  // check width && height
+  if (isNaN(width) || isNaN(height)) throw TypeError('The width and the height of layout are required and they are must be numbers.')
+
+  // check layout
+  if (typeof layout !== 'string') throw TypeError('The layout must string type!')
+  if (!~Canvas.layouts.indexOf(layout)) throw Error('Invalid layout, choose one from: ' + Canvas.layouts.join(' '))
+
+  option.width = +width
+  option.height = +height
+  option.layout = layout
+
+  return option
+}
+
+Canvas.format = function (layout, layoutData) {
+  if (layout === 'grid' && typeof layoutData === 'object') {
+    return Canvas.formatGrid(layoutData)
   }
+}
+
+Canvas.formatGrid = function (grid) {
+  var rows = grid.rows
+  var columns = grid.columns
+  var zones = grid.zones
 
   // format row && column
-  if (isNaN(row) || isNaN(column)) {
-    throw TypeError('The row -- ' + row + ', and the column -- ' + column + ', of canvas grid are required and they are must be numbers.')
+  if (isNaN(rows) || isNaN(columns)) {
+    throw TypeError('The rows -- ' + rows + ', and the columns -- ' + columns + ', of canvas grid are required and they are must be integers.')
   } else {
-    if (row < 1) throw Error('Invalid canvas grid row number -- ' + row + ', it must be not less than 1.')
-    if (column < 1) throw Error('Invalid canvas grid column number -- ' + column + ', it must be not less than 1.')
-    layout.row = Math.floor(row)
-    layout.column = Math.floor(column)
+    if (rows < 1) throw Error('Invalid canvas grid row number -- ' + rows + ', it must be not less than 1.')
+    if (columns < 1) throw Error('Invalid canvas grid column number -- ' + columns + ', it must be not less than 1.')
+    rows = Math.floor(rows)
+    columns = Math.floor(columns)
   }
 
   // The row && column number must be integer and in range [1, grid max row/column]
-  function formatRow (row) {
-    if (isNaN(row)) {
-      throw TypeError('The canvas grid row number: ' + row + ' must be a number')
-    } else if (row < 1 || row > layout.row){
-      throw TypeError('The canvas grid row number: ' + row + ' is not in range [1, ' + layout.row + ']')
+  function formatRow (r) {
+    if (isNaN(r)) {
+      throw TypeError('The canvas grid row number: ' + r + ' must be a number')
+    } else if (r < 1 || r > rows){
+      throw TypeError('The canvas grid row number: ' + r + ' is not in range [1, ' + rows + ']')
     } else {
-      return Math.floor(row)
+      return Math.floor(r)
     }
   }
 
-  function formatColumn (column) {
-    if (isNaN(column)) {
-      throw TypeError('The canvas grid column number: ' + column + ' must be a number')
-    } else if (column < 1 || column > layout.column){
-      throw TypeError('The canvas grid column number: ' + column + ' is not in range [1, ' + layout.column + ']')
+  function formatColumn (c) {
+    if (isNaN(c)) {
+      throw TypeError('The canvas grid column number: ' + c + ' must be a number')
+    } else if (c < 1 || c > columns){
+      throw TypeError('The canvas grid column number: ' + c + ' is not in range [1, ' + columns + ']')
     } else {
-      return Math.floor(column)
+      return Math.floor(c)
     }
   }
 
   // format zones data
   zones.forEach(function (zone) {
-    zone.rows = zone.rows.map(function (row) {
-      return formatRow(row)
+    zone.rowSpan = zone.rowSpan.map(function (r) {
+      return formatRow(r)
     }).sort(function (a, b) {
       return a - b
     })
-    zone.columns = zone.columns.map(function (column) {
-      return formatColumn(column)
+    zone.columnSpan = zone.columnSpan.map(function (c) {
+      return formatColumn(c)
     }).sort(function (a, b) {
       return a - b
     })
   })
 
-  return layout
+  return grid
 }
 
 Canvas.prototype.init = function () {
   var canvas = this.canvas
+  var width  = this.width
+  var height  = this.height
   var layout = this.layout
 
   // set canvas attributes
-  canvas.width = layout.width
-  canvas.height = layout.height
+  canvas.width = width
+  canvas.height = height
 
   // record the cursor position in canvas
   var _this = this
@@ -97,33 +125,35 @@ Canvas.prototype.init = function () {
     }
   })
 
-  // store zones from layout option
-  this._zones = Canvas.getZones(this.layout)
-
+  // apply layout
+  this[this.layout]()
 }
 
 /*
- * Get zones array, require layout { Number width, Number height, Array zones [ Number Array[2] columns, Number Array[2] rows, Object props ] }
+ * Generate zones array, require layout { Number width, Number height, Array zones [ Number Array[2] columns, Number Array[2] rows, Object props ] }
  * @para layout
  * @return zonesArray
  */
-Canvas.getZones = function (layout) {
-  var unitWidth
-  var unitHeight
-  var zones = layout.zones
+Canvas.prototype.grid = function () {
+  var grid = this._grid
+  var width   = this.width
+  var height  = this.height
+  var rows    = grid.rows
+  var columns = grid.columns
+  var zones   = grid.zones
   var zonesArray = []
 
   // get unit width && height
-  unitWidth = Math.round(layout.width / layout.column, 2)
-  unitHeight = Math.round(layout.height / layout.row, 2)
+  var unitWidth = Math.round(width / columns, 2)
+  var unitHeight = Math.round(height / rows, 2)
 
   // register zones
   zones.forEach(function (zone) {
     var _zone = new Zone({
-      fromX : (zone.columns[0] - 1) * unitWidth,
-      toX   : zone.columns[1] * unitWidth,
-      fromY : (zone.rows[0] - 1) * unitHeight,
-      toY   : zone.rows[1] * unitHeight,
+      fromX : (zone.columnSpan[0] - 1) * unitWidth,
+      toX   : zone.columnSpan[1] * unitWidth,
+      fromY : (zone.rowSpan[0] - 1) * unitHeight,
+      toY   : zone.rowSpan[1] * unitHeight,
       props : zone.props
     })
 
@@ -132,14 +162,14 @@ Canvas.getZones = function (layout) {
     zonesArray.push(_zone)
   })
 
-  return zonesArray
+  this._grid._zones = zonesArray
 }
 
 Canvas.prototype.clearCanvas = function () {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 }
 
-Canvas.prototype.drawCanvasBorder = function (lineWidth, lineColor) {
+Canvas.prototype.drawBorder = function (lineWidth, lineColor) {
   var canvas = this.canvas
   var ctx = this.ctx
   ctx.save()
