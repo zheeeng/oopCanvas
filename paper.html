@@ -10,8 +10,17 @@
 <body>
   <canvas id="paper"></canvas>
   <script type="text/javascript">
-    var paper = new Draw(document.getElementById('paper'), 600, 400)
+    var paper = new Draw(document.getElementById('paper'), 600, 400, {
+      row: 5,
+      column: 5,
+      zones: [
+        { rows: [1, 5], columns: [2, 4], type: 'painting' },
+        { rows: [1, 5], columns: [1, 1], type: 'tool' },
+        { rows: [1, 5], columns: [5, 5], type: 'tool' }
+      ]
+    })
     paper.init()
+    paper.layout()
     paper.reset()
   </script>
 </body>
