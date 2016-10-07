@@ -10,12 +10,9 @@
 <body>
   <canvas id="paper"></canvas>
   <script type="text/javascript">
-    var paper = new Draw({
-      canvasEl: document.getElementById('paper'),
-      width: 500,
-      height: 300
-    })
+    var paper = new Draw(document.getElementById('paper'), 600, 400)
     paper.init()
+    paper.reset()
   </script>
 </body>
 </html>

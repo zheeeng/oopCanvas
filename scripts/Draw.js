@@ -1,5 +1,6 @@
-var Draw = function (containerOption, darwOption) {
-  Canvas.call(this, containerOption)
+var Draw = function (canvasEl, width, height, layout) {
+  Canvas.call(this, canvasEl, width, height)
+  this.layout = layout
   this.isPainting = false
 }
 
@@ -32,4 +33,9 @@ Draw.prototype.init = function () {
       _this.lastY = _this.y
     }
   })
+}
+
+Draw.prototype.reset = function () {
+  this.clearCanvas()
+  this.drawCanvasBorder(3, 'black')
 }
