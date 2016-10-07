@@ -4,18 +4,19 @@ var Canvas = function (canvasEl, width, height) {
   this.height = height !== undefined ? height : 300
 
   this.ctx = this.canvas.getContext('2d')
-  this.e = null
+
+  this._e = null
 }
 
 Object.defineProperties(Canvas.prototype, {
   x: {
     get: function () {
-      return this.e.pageX - this.canvas.offsetLeft
+      return this._e.pageX - this.canvas.offsetLeft
     }
   },
   y: {
     get: function () {
-      return this.e.pageY - this.canvas.offsetTop
+      return this._e.pageY - this.canvas.offsetTop
     }
   }
 })
@@ -26,7 +27,7 @@ Canvas.prototype.init = function () {
   canvas.width = _this.width
   canvas.height = _this.height
   addEvent(canvas, 'mousemove', function (e) {
-    _this.e = e
+    _this._e = e
   })
 }
 
