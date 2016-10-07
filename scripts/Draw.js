@@ -1,5 +1,5 @@
-var Draw = function (canvasEl, layouts) {
-  Canvas.call(this, canvasEl, layouts)
+var Draw = function (canvasEl, option) {
+  Canvas.call(this, canvasEl, option)
 
   this._isPainting = false
 }
@@ -8,21 +8,18 @@ extend(Draw, Canvas)
 
 Draw.prototype.init = function () {
   Draw.uber.init.apply(this, arguments)
-  // this.drawZones()
-  // this.active()
+  this.drawZones()
+  this.active()
 }
 
 Draw.prototype.drawZones = function () {
-  if (this._zones === undefined) throw Error('no zones to draw')
+  if (this._grid._zones === undefined) throw Error('no zones to draw')
 
-  var zones = this._zones
+  var zones = this._grid._zones
   var ctx = this.ctx
   zones.forEach(function (zone) {
     if (zone.props && zone.props.type === 'painting') {
-      ctx.save()
-      ctx.rect(zone.fromX, zone.fromY, zone.toX - zone.fromX, zone.toY - zone.fromY)
-      ctx.stroke()
-      ctx.restore()
+      zone.drawBorder(ctx)
     } else if (zone.props && zone.props.type === 'tool') {
       console.log('draw tool zone')
     }
@@ -60,5 +57,5 @@ Draw.prototype.active = function () {
 
 Draw.prototype.reset = function () {
   this.clearCanvas()
-  this.drawCanvasBorder(3, 'black')
+  this.drawBorder(3, 'black')
 }
