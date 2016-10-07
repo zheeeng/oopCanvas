@@ -113,27 +113,22 @@ Canvas.getZones = function (layout) {
   var zones = layout.zones
   var zonesArray = []
 
-  // define the validator for check zones conflict
-  function isZoneValidate (zone) {
-    return zonesArray.every(function (v) {
-      return (v.fromX >= zone.toX || v.fromY >= zone.toY) || (v.toX <= zone.fromX || v.toY <= zone.fromY)
-    })
-  }
-
   // get unit width && height
   unitWidth = Math.round(layout.width / layout.column, 2)
   unitHeight = Math.round(layout.height / layout.row, 2)
 
   // register zones
   zones.forEach(function (zone) {
-    var _zone = {
+    var _zone = new Zone({
       fromX : (zone.columns[0] - 1) * unitWidth,
       toX   : zone.columns[1] * unitWidth,
       fromY : (zone.rows[0] - 1) * unitHeight,
       toY   : zone.rows[1] * unitHeight,
-      props  : zone.props
-    }
-    if (!isZoneValidate(_zone)) throw Error('custom zone: ' + JSON.stringify(zone) + ' conflicts with other zones')
+      props : zone.props
+    })
+
+    if (!Zone.isZoneValidate(zonesArray, _zone)) throw Error('custom zone: ' + JSON.stringify(zone) + ' conflicts with other zones')
+
     zonesArray.push(_zone)
   })
 
