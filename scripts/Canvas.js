@@ -173,15 +173,11 @@ Canvas.prototype.drawBorder = function (lineWidth, lineColor) {
   var canvas = this.canvas
   var ctx = this.ctx
   ctx.save()
-  ctx.lineWidth = lineWidth
-  ctx.strokeStyle = lineColor
 
-  ctx.beginPath()
-  ctx.moveTo(0, 0)
-  ctx.lineTo(0, this.height)
-  ctx.lineTo(this.width, this.height)
-  ctx.lineTo(this.width, 0)
-  ctx.closePath()
+  if (lineWidth) ctx.lineWidth = lineWidth
+  if (lineColor) ctx.strokeStyle = lineColor
+
+  ctx.rect(0, 0, this.width, this.height)
   ctx.stroke()
   ctx.restore()
 }
