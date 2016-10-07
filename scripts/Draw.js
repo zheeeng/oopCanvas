@@ -14,6 +14,10 @@ Draw.prototype.init = function () {
   var canvas = _this.canvas
   var ctx = _this.ctx
 
+  this.layout()
+
+  this.drawZones()
+
   addEvent(canvas, 'mousedown', function (e) {
     _this._isPainting = true
     _this.lastX = _this.x
@@ -101,7 +105,7 @@ Draw.prototype.layout = function () {
     })
   }
 
-  // this.clearCanvas()
+  this.clearCanvas()
 
   // get unit width && height
   unitWidth = Math.round(this.width / layouts.column, 2)
@@ -118,6 +122,24 @@ Draw.prototype.layout = function () {
     }
     if (!checkZoneIsValidate(_zone)) throw Error('custom zone:' + zone + 'conflicts with other zones')
     zonesArray.push(_zone)
+  })
+
+  this.zones = zonesArray
+}
+
+Draw.prototype.drawZones = function () {
+  if (this.zones === undefined) throw Error('no zones to draw')
+
+  var zones = this.zones
+  var ctx = this.ctx
+  zones.forEach(function (zone) {
+    if (zone.type === 'painting') {
+      console.log(zone)
+      ctx.save()
+      ctx.rect(zone.fromX, zone.fromY, zone.toX - zone.fromX, zone.toY - zone.fromY)
+      ctx.stroke()
+      ctx.restore()
+    }
   })
 }
 
