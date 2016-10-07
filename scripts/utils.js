@@ -13,3 +13,7 @@ function extend (Child, Parent) {
   Child.prototype.constructor = Child
   Child.uber = Parent.prototype
 }
+
+function isCanvasElement(o){
+  return typeof HTMLElement === 'object' ? o instanceof HTMLElement && o.tagName === 'CANVAS' : o && typeof o === 'object' && o !== null && o.nodeType === 1 && o.tagName === 'CANVAS'
+}
